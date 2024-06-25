@@ -1,4 +1,5 @@
 ﻿using dotenv.net;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using PortfolioBackend.Services;
 
 namespace PortfolioBackend
@@ -20,6 +21,14 @@ namespace PortfolioBackend
             services.AddSingleton<IEmailService, EmailService>();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x => {
+                
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
