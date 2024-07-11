@@ -13,9 +13,24 @@ namespace PortfolioBackend
 
         public IConfiguration Configuration { get; }
 
-
         public void ConfigureServices(IServiceCollection services)
         {
+            var allowedOrigins = Environment.GetEnvironmentVariable("ALLOWED_ORIGINS")?.Split(',');
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(
+                    "AllowReactApp",
+                    builder =>
+                    {
+                        if (allowedOrigins != null)
+                        {
+                            builder.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod();
+                        }
+                    }
+                );
+            });
+
             services.AddControllers();
             services.AddSingleton<IEmailService, EmailService>();
             services.AddEndpointsApiExplorer();
@@ -41,6 +56,8 @@ namespace PortfolioBackend
 
             app.UseRouting();
             app.UseAuthorization();
+
+            app.UseCors("AllowReactApp");
 
             app.UseEndpoints(endpoints =>
             {
